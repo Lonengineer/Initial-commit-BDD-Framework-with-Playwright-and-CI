@@ -1,0 +1,87 @@
+name: Saucedemo BDD Tests CI
+
+# This workflow runs the automated tests on every push and pull request
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install Google Chrome
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      # Step 4: Install Python dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 5: Create necessary directories
+      - name: Create directories
+        run: |
+          mkdir -p reports/allure-results
+          mkdir -p screenshots
+          mkdir -p logs
+
+      # Step 6: Run Behave tests in headless mode
+      - name: Run tests
+        run: |
+          # Override config to run headless in CI
+          python -c "
+          import json
+          with open('config/config.json', 'r') as f:
+              config = json.load(f)
+          config['headless'] = True
+          with open('config/config.json', 'w') as f:
+              json.dump(config, f, indent=4)
+          "
+          behave --no-capture --format=allure_behave.formatter:AllureFormatter -o reports/allure-results
+
+      # Step 7: Install Allure CLI for report generation
+      - name: Install Allure CLI
+        run: |
+          curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+          tar -zxvf allure.tgz
+          sudo mv allure-2.25.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
+      # Step 8: Generate Allure HTML report
+      - name: Generate Allure Report
+        if: always()
+        run: allure generate reports/allure-results -o allure-report --clean
+
+      # Step 9: Upload Allure report as artifact
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      # Step 10: Upload screenshots on failure
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots
+          path: screenshots/
+          retention-days: 30
