@@ -1,3 +1,5 @@
+
+# pyrefly: ignore [missing-import]
 from behave import when, then
 from pages.products_page import ProductsPage
 from pages.cart_page import CartPage
@@ -6,6 +8,7 @@ from pages.cart_page import CartPage
 def step_add_first_product(context):
     context.products_page = ProductsPage(context.page)
     context.products_page.add_product_to_cart_by_index(0)
+
 
 @when('the user adds another product to the cart')
 def step_add_another_product(context):
@@ -60,3 +63,10 @@ def step_verify_cart_badge_hidden(context):
     products_page = ProductsPage(context.page)
     is_displayed = products_page.is_cart_badge_displayed()
     assert is_displayed is False, "Expected cart badge to be hidden, but it was displayed."
+
+@then('the add to cart button for the first product should become "{expected_text}"')
+def step_verify_button_text(context, expected_text):
+    products_page = ProductsPage(context.page)
+    actual_text = products_page.get_product_button_text_by_index(0)
+    assert actual_text == expected_text, f"Expected button text '{expected_text}', got '{actual_text}'"
+

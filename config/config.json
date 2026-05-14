@@ -7,6 +7,6 @@
     "password": "secret_sauce",
     "screenshot_on_failure": true,
     "headless": false,
-    "slow_mode": true,
+    "slow_mode": false,
     "step_delay": 2
 }

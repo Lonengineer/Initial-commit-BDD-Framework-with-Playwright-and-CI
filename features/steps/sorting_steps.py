@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from behave import when, then
 from pages.products_page import ProductsPage
 

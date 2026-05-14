@@ -85,6 +85,15 @@ class CheckoutPage(BasePage):
         self.click(self.FINISH_BUTTON)
         self.logger.info("Clicked Finish to complete order.")
 
+    def get_total_price(self):
+        """
+        Get the total price displayed on the overview page.
+        
+        Returns:
+            str: Total price text (e.g., "Total: $0.00")
+        """
+        return self.get_text(self.SUMMARY_TOTAL)
+
     # ---- Complete Page Actions ----
 
     def get_complete_header(self):

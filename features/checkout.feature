@@ -17,11 +17,19 @@ Feature: Checkout Process
     Then the order completion message should be displayed
     And the completion header should say "Thank you for your order!"
 
-  # Test Case 10: Negative test - attempt checkout with empty required fields
-  Scenario: Attempt checkout with empty required fields
+  # Test Case 10: Negative test - attempt checkout with missing required fields
+  Scenario Outline: Attempt checkout with missing required fields
     When the user adds the first product to the cart
     And the user navigates to the cart page
     And the user clicks the checkout button
-    And the user clicks continue on checkout without filling any fields
+    And the user fills in checkout information with "<first_name>" "<last_name>" "<zip_code>"
+    And the user clicks continue on checkout
     Then a checkout error message should be displayed
-    And the error message should contain "First Name is required"
+    And the error message should contain "<expected_error>"
+
+    Examples:
+      | first_name | last_name | zip_code | expected_error                 |
+      | empty      | empty     | empty    | Error: First Name is required  |
+      | empty      | Doe       | 12345    | Error: First Name is required  |
+      | John       | empty     | 12345    | Error: Last Name is required   |
+      | John       | Doe       | empty    | Error: Postal Code is required |

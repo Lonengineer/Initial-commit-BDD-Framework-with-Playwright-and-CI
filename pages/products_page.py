@@ -71,6 +71,18 @@ class ProductsPage(BasePage):
         else:
             self.logger.error(f"No 'Add to Cart' button found at index {index}.")
 
+    def get_product_button_text_by_index(self, index=0):
+        """
+        Get the text of the button (Add to cart / Remove) for a product.
+        
+        Args:
+            index: Zero-based index of the product
+        Returns:
+            str: The button text
+        """
+        button = self.page.locator(self.INVENTORY_ITEMS).nth(index).locator("button")
+        return button.inner_text()
+
     def add_multiple_products_to_cart(self, count=2):
         """
         Add multiple products to the cart.

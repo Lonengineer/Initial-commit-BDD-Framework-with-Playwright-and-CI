@@ -38,3 +38,17 @@ Feature: Shopping Cart
     And the user removes all items from the cart
     Then the cart should be empty
     And the cart badge should not be displayed
+
+  # Test Case 12: Negative test - attempt checkout with empty cart
+  Scenario: Attempting to checkout an empty cart
+    When the user navigates to the cart page
+    And the user clicks the checkout button
+    And the user fills in checkout information with "John" "Doe" "12345"
+    And the user clicks continue on checkout
+    Then the total price should be "$0.00"
+
+  # Test Case 13: Negative test - Button changes to "Remove", preventing double add
+  Scenario: Button changes to "Remove" after adding an item
+    When the user adds the first product to the cart
+    Then the add to cart button for the first product should become "Remove"
+

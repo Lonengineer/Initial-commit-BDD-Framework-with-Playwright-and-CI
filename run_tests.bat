@@ -22,11 +22,17 @@ if "%1"=="report" (
 )
 
 if "%1"=="" (
+    echo [*] Eski test sonuclari temizleniyor...
+    if exist "reports\allure-results" rmdir /s /q "reports\allure-results"
+    
     echo [*] TUM testler calistiriliyor...
-    python -m behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f pretty --no-logcapture --no-capture
+    py -m behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f pretty --no-logcapture --no-capture
 ) else (
+    echo [*] Eski test sonuclari temizleniyor...
+    if exist "reports\allure-results" rmdir /s /q "reports\allure-results"
+
     echo [*] %1 testleri calistiriliyor...
-    python -m behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f pretty --no-logcapture --no-capture features/%1.feature
+    py -m behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f pretty --no-logcapture --no-capture features/%1.feature
 )
 
 echo.
