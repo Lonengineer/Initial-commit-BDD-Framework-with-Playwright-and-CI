@@ -43,7 +43,7 @@ Feature: Shopping Cart
   Scenario: Attempting to checkout an empty cart
     When the user navigates to the cart page
     And the user clicks the checkout button
-    And the user fills in checkout information with "John" "Doe" "12345"
+    And the user fills in checkout information with "Alpır" "Erdogan" "424242"
     And the user clicks continue on checkout
     Then the total price should be "$0.00"
 
